@@ -12,3 +12,4 @@ class User(Base):
     name = sa.Column(sa.String)
     password = sa.Column(sa.String)
     is_active = sa.Column(sa.Boolean(), default=True)
+    is_super_user = sa.Column(sa.Boolean(), default=False)

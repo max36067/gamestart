@@ -8,6 +8,12 @@ class UserBase(BaseModel):
 
 class UserCreate(UserBase):
     user_password: str
+    is_super_user: bool
+
+
+class UserUpdate(UserBase):
+    user_password: str
+    is_active: bool
 
 
 class User(UserBase):
