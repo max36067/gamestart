@@ -1,4 +1,3 @@
-import os
 from logging.config import fileConfig
 
 from sqlalchemy import engine_from_config
@@ -6,6 +5,7 @@ from sqlalchemy import pool
 
 from alembic import context
 
+from app.db.base import Base
 from app.models import Game, User
 
 # this is the Alembic Config object, which provides
@@ -21,20 +21,12 @@ if config.config_file_name is not None:
 # for 'autogenerate' support
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
-target_metadata = [User.metadata]
+target_metadata = Base.metadata
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:
 # my_important_option = config.get_main_option("my_important_option")
 # ... etc.
-
-
-def get_url():
-    user = os.getenv("DB_USER", "postgres")
-    password = os.getenv("DB_PASSWORD", "example")
-    server = os.getenv("DB_SERVER", "localhost")
-    database = os.getenv("DB_DATABASE", "gamestart")
-    return f"postgresql://{user}:{password}@{server}/{database}"
 
 
 def run_migrations_offline() -> None:
@@ -49,7 +41,7 @@ def run_migrations_offline() -> None:
     script output.
 
     """
-    url = get_url()
+    url = config.get_main_option("sqlalchemy.url")
     context.configure(
         url=url,
         target_metadata=target_metadata,

@@ -1,13 +1,11 @@
-from app.db import Base
 import sqlalchemy as sa
-from sqlalchemy_utils import EmailType, UUIDType
-import uuid
+from sqlalchemy_utils import EmailType
+
+from app.db import Base
 
 
 class User(Base):
-    id = sa.Column(
-        UUIDType(binary=False), primary_key=True, index=True, default=uuid.uuid4
-    )
+    id = sa.Column(sa.Integer, primary_key=True, index=True)
     email = sa.Column(EmailType, index=True, unique=True)
     name = sa.Column(sa.String)
     password = sa.Column(sa.String)
