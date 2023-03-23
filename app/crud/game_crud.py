@@ -1,6 +1,8 @@
-from .crud_base import CRUDBase
 from sqlalchemy.orm import Session
+
 from app.models import Game
+
+from .crud_base import CRUDBase
 
 
 class GameCRUD(CRUDBase):

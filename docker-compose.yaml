@@ -9,3 +9,11 @@ services:
       POSTGRES_PASSWORD: example
     ports:
       - 5432:5432
+
+  redis:
+    image: bitnami/redis:latest
+    restart: always
+    environment:
+      - REDIS_PASSWORD=example
+    ports: 
+      - 6379:6379

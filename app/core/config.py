@@ -21,5 +21,13 @@ class Settings(BaseSettings):
     algorithm: str
     access_token_expire_minutes: int
 
+    redis_host: str
+    redis_port: str
+    redis_password: str
+
+    @property
+    def redis_uri(self):
+        return f"redis://:{self.redis_password}@{self.redis_host}:{self.redis_port}/0"
+
 
 setting = Settings()

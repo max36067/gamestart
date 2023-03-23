@@ -1,19 +1,23 @@
-from typing import Any
-from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy.orm import Session
-from app.api import deps
-from fastapi.security import OAuth2PasswordRequestForm
-from app import crud, models, schemas
 from datetime import timedelta
-from app.core.config import setting
-from app.core import security
+from typing import Any
 
+from redis import Redis
+from fastapi import APIRouter, Depends, HTTPException
+from fastapi.responses import RedirectResponse, Response
+from fastapi.security import OAuth2PasswordRequestForm
+from sqlalchemy.orm import Session
+
+from app import crud, models, schemas
+from app.api import deps
+from app.core import security
+from app.core.config import setting
 
 router = APIRouter()
 
 
-@router.post("/login/access-token", response_model=schemas.Token)
+@router.post("/login", response_model=schemas.Token)
 def user_login(
+    response: Response,
     db: Session = Depends(deps.get_db),
     form_data: OAuth2PasswordRequestForm = Depends(),
 ) -> Any:
@@ -26,8 +30,25 @@ def user_login(
         raise HTTPException(status_code=400, detail="Inactive user")
 
     access_token_expires = timedelta(minutes=setting.access_token_expire_minutes)
+    token = security.create_access_token(user.email, expire_delta=access_token_expires)
+    cookie_expires = token.pop("exp")
+    response.set_cookie(
+        key="t",
+        value=token,
+        expires=cookie_expires,
+        httponly=True,
+    )
+    return token
 
-    return security.create_access_token(user.email, expire_delta=access_token_expires)
+
+@router.post("/logout")
+def user_logout(
+    cache: Redis = Depends(deps.get_redis), token: str = Depends(deps.reusable_oauth2)
+):
+    security.add_black_list(cache, token)
+    resp = RedirectResponse("/", status_code=302)
+    resp.delete_cookie("t")
+    return resp
 
 
 @router.post("/login/test-token")

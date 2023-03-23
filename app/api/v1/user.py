@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, status
-from fastapi.responses import JSONResponse
+from fastapi.encoders import jsonable_encoder
 from fastapi.exceptions import HTTPException
+from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
 
 from app import crud, models, schemas
@@ -12,14 +13,16 @@ router = APIRouter()
 
 @router.post("/", response_model=schemas.User)
 def create_user(user_in: schemas.UserCreate, db: Session = Depends(deps.get_db)):
-    user = crud.user.get_user_by_email(db=db, email=user_in.email)
+    user = crud.user.get_by_email(db=db, email=user_in.email)
     if user:
         raise HTTPException(status_code=400, detail="User is already exists.")
 
     # Need current super user to create user
     user = crud.user.create(db=db, obj_in=user_in)
 
-    return JSONResponse(status_code=status.HTTP_201_CREATED, content=user)
+    return JSONResponse(
+        status_code=status.HTTP_201_CREATED, content=jsonable_encoder(user)
+    )
 
 
 @router.get("/me", response_model=schemas.User)

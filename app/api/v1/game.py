@@ -1,11 +1,12 @@
 from typing import Union
+
 from fastapi import APIRouter, Depends
 from fastapi.exceptions import HTTPException
-from app.api import deps
 from sqlalchemy.orm import Session
-from app.schemas import Game, GameCreate
-from app import crud, models
 
+from app import crud, models
+from app.api import deps
+from app.schemas import Game, GameCreate
 
 router = APIRouter()
 
@@ -24,7 +25,7 @@ def get_game_by_id(game_id: int, db: Session = Depends(deps.get_db)):
 
 @router.post("/", response_model=Game)
 async def create_game(game_in: GameCreate, db: Session = Depends(deps.get_db)):
-    game = crud.game.get_user_by_name(game_in.name)
+    game = crud.game.get_user_by_name(db, game_in.name)
     if game:
         raise HTTPException(
             status_code=400, detail="The Game with this name already exists in system."

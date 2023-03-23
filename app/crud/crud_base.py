@@ -1,8 +1,9 @@
-from typing import Any, TypeVar, Type, Generic, Union
+from typing import Any, Generic, Type, TypeVar, Union
 
 from fastapi.encoders import jsonable_encoder
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
+
 from app.db import Base
 
 ModelType = TypeVar("ModelType", bound=Base)
