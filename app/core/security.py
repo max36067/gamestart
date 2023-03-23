@@ -1,9 +1,9 @@
 from datetime import datetime, timedelta, timezone
 from typing import Any, Union
 
-from redis import Redis
 from jose import jwt
 from passlib.context import CryptContext
+from redis import Redis
 
 from app.core.config import setting
 

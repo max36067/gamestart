@@ -1,6 +1,8 @@
 from fastapi import APIRouter, Depends
-from . import game, login, test, user
+
 from app.api import deps
+
+from . import game, login, test, user
 
 router = APIRouter(prefix="/api/v1")
 

@@ -1,16 +1,16 @@
 from typing import Iterator
 
+import redis
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from jose import jwt
 from pydantic import ValidationError
 from sqlalchemy.orm import Session
-import redis
 
 from app import crud, models, schemas
 from app.core.config import setting
-from app.db.session import SessionLocal
 from app.db.redis import pool
+from app.db.session import SessionLocal
 
 reusable_oauth2 = OAuth2PasswordBearer(tokenUrl="/api/v1/login")
 

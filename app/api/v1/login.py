@@ -1,10 +1,10 @@
 from datetime import timedelta
 from typing import Any
 
-from redis import Redis
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import RedirectResponse, Response
 from fastapi.security import OAuth2PasswordRequestForm
+from redis import Redis
 from sqlalchemy.orm import Session
 
 from app import crud, models, schemas
