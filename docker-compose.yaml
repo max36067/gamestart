@@ -17,3 +17,11 @@ services:
       - REDIS_PASSWORD=example
     ports: 
       - 6379:6379
+
+  app:
+    build: .
+    ports:
+      - 80:80
+    depends_on:
+     - db
+     - redis
